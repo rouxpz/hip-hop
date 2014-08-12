@@ -1,6 +1,6 @@
 from pygenius import songs
 
-lyrics = songs.searchSong("wu tang clan", "cream", "lyrics")
+lyrics = songs.searchSong("raekwon", "ice cream", "lyrics")
 
 for lyric in lyrics:
 	print lyric
