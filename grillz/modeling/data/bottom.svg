@@ -4,10 +4,7 @@
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="182.333px" height="141.73px" viewBox="0 0 182.333 141.73" enable-background="new 0 0 182.333 141.73"
 	 xml:space="preserve">
-<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M143.819,115.458"/>
-<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M135.799,70.865"/>
-<path fill="none" stroke="#000000" stroke-miterlimit="10" d="M49.866,70.865"/>
-<path fill="none" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" d="M142.152,121.186c0,0,0.702-84.629-50.984-84.958
-	v0c-51.932,0.015-50.986,84.958-50.986,84.958H6.167c0,0,7.833-107.708,85-107.708h-0.533c77.166,0,85,107.708,85,107.708
-	l0.531,0.001H142.152"/>
+<path fill="none" stroke="#000000" stroke-width="0.5" stroke-miterlimit="10" d="M176.004,121.187
+	c0,0-8.188-107.453-85.104-107.704C13.986,13.733,6.167,121.185,6.167,121.185h34.015c0,0-0.946-84.943,50.986-84.958v0
+	c51.687,0.33,50.791,84.958,50.791,84.958L176.004,121.187z"/>
 </svg>
