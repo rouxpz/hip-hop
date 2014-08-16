@@ -5,104 +5,99 @@ import geomerative.*;
 import org.apache.batik.svggen.font.table.*;
 import org.apache.batik.svggen.font.*;
 
-RShape bottom;
-RPolygon pbottom;
+RShape[] frame = new RShape[4];
+RPolygon[] pframe = new RPolygon[4];
 
-UVertexList vl, vl2, vl3, vl4, vl5, vl6, vl7;
+UVertexList[] vl = new UVertexList[10];
 UGeo geo;
 UNav3D nav;
 
+boolean flat = false;
+
 void setup() {
-  size(600, 600, P3D);
+
+  //initialization
+  size(300, 300, P3D);
   UMB.setPApplet(this);
   nav = new UNav3D();
-
   smooth();
   RG.init(this);
 
-  bottom = RG.loadShape("bottom.svg");
+  //load SVGs
+  for (int i = 0; i < 4; i++) {
+    frame[i] = RG.loadShape("vl" + i + ".svg");
+    //println("loaded frame" + i);
+  }
 
-  buildBottom();
+  buildFrame();
 }
 
 void draw() {
-  background(100);
+  background(150);
   lights();
   nav.doTransforms();
-  stroke(0);
-  translate(width/2, height/2);
-  // vl.draw();
-  //vl2.draw();
+
+  stroke(240);
   geo.draw();
-//
-//  stroke(255, 0, 0);
-//  geo.drawNormals(10);
+  for (int i = 0; i < 4; i++) {
+    //vl[i].draw();
+    //println("loaded frame" + i);
+  }
 }
 
-void buildBottom() {
-  RCommand.setSegmentLength(5);
-  RCommand.setSegmentator(RG.UNIFORMLENGTH);
+void buildFrame() {
+  
+  //build the uniform frame for the grill
+  for (int i = 0; i < 4; i++) {
+    int curveLength = int(frame[i].getCurveLengths()[0]);
+    //println(curveLength);
+    RCommand.setSegmentator(RG.UNIFORMSTEP);
+    if (i < 1 || i > 2) {
+      RCommand.setSegmentStep(45);
+      pframe[i] = frame[i].toPolygon();
+      //pframe[i].addClose();
 
-  pbottom = bottom.toPolygon();
-  pbottom.addClose();
+      vl[i] = new UVertexList();
+      for (int j = 0; j < pframe[i].contours[0].points.length-1; j++) {
+        //println(pframe[i].contours[0].points.length);
+        RPoint fp = pframe[i].contours[0].points[j];
+        vl[i].add(new UVertex(fp.x, fp.y, 0));
+      }
+    } else {
+      RCommand.setSegmentStep(30);
+      pframe[i] = frame[i].toPolygon();
+      //pframe[i].addClose();
 
-  //create outer boundary from SVG
-  vl = new UVertexList();
-  for (int i = 0; i < pbottom.contours[0].points.length-59; i++) {
-    RPoint bottompoint = pbottom.contours[0].points[i];
-    vl.add(new UVertex(bottompoint.x, bottompoint.y, 0));
-    println(bottompoint.x + ", " + bottompoint.y);
+      vl[i] = new UVertexList();
+      for (int j = pframe[i].contours[0].points.length-1; j > 0; j--) {
+        //println(pframe[i].contours[0].points.length);
+        RPoint fp = pframe[i].contours[0].points[j];
+        vl[i].add(new UVertex(fp.x, fp.y, 0));
+      }
+    }
+
+    println(vl[i].size());
   }
 
-  //println(vl.size());
+  //reverse(vl[1]);
+  vl[6] = vl[3].copy().translate(0, 0, 20);
+  vl[3].translate(0, 0, 5);
+  vl[4] = vl[2].copy().translate(0, 0, 10);
+  vl[5] = vl[1].copy().translate(0, 0, 10);
+  vl[7] = vl[2].copy().translate(0, 0, 5);
+  geo = new UGeo().quadstrip(vl[1], vl[0]);
+  geo.quadstrip(vl[6], vl[0]).quadstrip(vl[7], vl[4]).quadstrip(vl[4], vl[5]).quadstrip(vl[3], vl[6]).quadstrip(vl[5], vl[1]).quadstrip(vl[3], vl[7]);
+}
 
-  vl2 = vl.copy().translate(0, 0, 6);
-  geo = new UGeo().quadstrip(vl, vl2);
-
-  vl3 = new UVertexList();
-  
-  //create inner boundary
-  vl3 = vl.copy().scale(0.6, 0.6, 0.6).translate(30, 30, 0);
-  vl4 = vl3.copy().translate(0, 0, 6);
-  geo.quadstrip(vl4, vl3);
-  geo.quadstrip(vl, vl3);
-  geo.quadstrip(vl4, vl2);
-  
-  vl5 = new UVertexList();
-  vl6 = new UVertexList();
-  vl7 = new UVertexList();
-  
-  vl5 = vl4.copy().translate(0, 0, 5);
-  vl6 = vl5.copy().scale(1.1, 1.1, 1.1).translate(-8, -8, -1);
-  vl7 = vl6.copy().translate(0, 0, -5);
-  geo.quadstrip(vl5, vl4);
-  geo.quadstrip(vl7, vl6);
-  geo.quadstrip(vl6, vl5);
-  
-  //adding faces to the ends
-  geo.addFace(vl.first(), vl2.first(), vl4.first());
-  geo.addFace(vl4.first(), vl3.first(), vl.first());
-  geo.addFace(vl4.last(), vl2.last(), vl.last());
-  geo.addFace(vl.last(), vl3.last(), vl4.last());
-  
-  geo.addFace(vl5.first(), vl6.first(), vl7.first());
-  geo.addFace(vl5.first(), vl4.first(), vl7.first());
-  geo.addFace(vl5.last(), vl6.last(), vl7.last());
-  geo.addFace(vl5.last(), vl4.last(), vl7.last());
-
-  // if (bottompoints != null) {
-  //   stroke(255);
-  //   beginShape();
-  // for (int i = 0; i < bottompoints.length; i++) {
-  //   stroke(255, 0, 0);
-  //   ellipse(bottompoints[i].x, bottompoints[i].y, 5, 5);
-  // }
-  //   endShape();
-  // }
+void addData() {
+  //add data to make the front into a landscape
 }
 
 void keyPressed() {
+  //write to STL file
   
-  geo.writeSTL("test.stl");
-  
+  if (key == 's') {
+    geo.writeSTL("testv2.stl");
+  }
 }
+
