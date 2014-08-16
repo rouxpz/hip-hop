@@ -38,11 +38,11 @@ void draw() {
   nav.doTransforms();
 
   stroke(240);
+  fill(100);
   geo.draw();
-  for (int i = 0; i < 4; i++) {
-    //vl[i].draw();
-    //println("loaded frame" + i);
-  }
+
+  stroke(255, 0, 0);
+  geo.drawNormals(10);
 }
 
 void buildFrame() {
@@ -55,7 +55,6 @@ void buildFrame() {
     if (i < 1 || i > 2) {
       RCommand.setSegmentStep(45);
       pframe[i] = frame[i].toPolygon();
-      //pframe[i].addClose();
 
       vl[i] = new UVertexList();
       for (int j = 0; j < pframe[i].contours[0].points.length-1; j++) {
@@ -63,10 +62,10 @@ void buildFrame() {
         RPoint fp = pframe[i].contours[0].points[j];
         vl[i].add(new UVertex(fp.x, fp.y, 0));
       }
+      
     } else {
       RCommand.setSegmentStep(30);
       pframe[i] = frame[i].toPolygon();
-      //pframe[i].addClose();
 
       vl[i] = new UVertexList();
       for (int j = pframe[i].contours[0].points.length-1; j > 0; j--) {
@@ -79,14 +78,18 @@ void buildFrame() {
     println(vl[i].size());
   }
 
-  //reverse(vl[1]);
-  vl[6] = vl[3].copy().translate(0, 0, 20);
+  //n3xt l3v3l UVertexLists
   vl[3].translate(0, 0, 5);
   vl[4] = vl[2].copy().translate(0, 0, 10);
   vl[5] = vl[1].copy().translate(0, 0, 10);
+  vl[6] = vl[3].copy().translate(0, 0, 30);
   vl[7] = vl[2].copy().translate(0, 0, 5);
+  
+  //adding dem faces
   geo = new UGeo().quadstrip(vl[1], vl[0]);
   geo.quadstrip(vl[6], vl[0]).quadstrip(vl[7], vl[4]).quadstrip(vl[4], vl[5]).quadstrip(vl[3], vl[6]).quadstrip(vl[5], vl[1]).quadstrip(vl[3], vl[7]);
+  geo.addFace(vl[3].first(), vl[0].first(), vl[6].first()).addFace(vl[0].first(), vl[3].first(), vl[7].first()).addFace(vl[1].first(), vl[0].first(), vl[7].first()).addFace(vl[1].first(), vl[7].first(), vl[5].first()).addFace(vl[5].first(), vl[7].first(), vl[4].first());
+  geo.addFace(vl[6].last(), vl[0].last(), vl[3].last()).addFace(vl[7].last(), vl[3].last(), vl[0].last()).addFace(vl[7].last(), vl[0].last(), vl[1].last()).addFace(vl[5].last(), vl[7].last(), vl[1].last()).addFace(vl[4].last(), vl[7].last(), vl[5].last());
 }
 
 void addData() {
@@ -94,8 +97,8 @@ void addData() {
 }
 
 void keyPressed() {
-  //write to STL file
   
+  //write to STL file 
   if (key == 's') {
     geo.writeSTL("testv2.stl");
   }
