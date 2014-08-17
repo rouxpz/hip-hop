@@ -88,24 +88,22 @@ void buildFrame() {
   
   //shaping the top into a "mouth-friendly" form
   vl[6] = new UVertexList();
-  
   for (int i = 0; i < vl[3].size(); i++) {
-      if (i < 45) {
+      if (i < 44) {
       diff = vl[3].get(i).z + 0.7*i;
-    } else if (i > 47) {
+    } else if (i > 48) {
       diff = vl[3].get(i).z + 0.7*(92-i);
     } else {
-      diff = vl[3].get(45).z + 0.7*45;
+      diff = vl[3].get(43).z + 31.5;
     }
     
-    UVertex nv = new UVertex(vl[3].get(i).x, vl[3].get(i).y, diff);
-    
+    UVertex nv = new UVertex(vl[3].get(i).x, vl[3].get(i).y, diff);    
     vl[6].add(nv);
   }
 
   //adding dem faces
   geo = new UGeo().quadstrip(vl[1], vl[0]);
-  geo.quadstrip(vl[7], vl[4]).quadstrip(vl[4], vl[5]).quadstrip(vl[3], vl[6]).quadstrip(vl[5], vl[1]).quadstrip(vl[3], vl[7]);
+  geo.quadstrip(vl[7], vl[4]).quadstrip(vl[4], vl[5]).quadstrip(vl[5], vl[1]).quadstrip(vl[3], vl[7]).quadstrip(vl[3], vl[6]);
   geo.addFace(vl[3].first(), vl[0].first(), vl[6].first()).addFace(vl[0].first(), vl[3].first(), vl[7].first()).addFace(vl[1].first(), vl[0].first(), vl[7].first()).addFace(vl[1].first(), vl[7].first(), vl[5].first()).addFace(vl[5].first(), vl[7].first(), vl[4].first());
   geo.addFace(vl[6].last(), vl[0].last(), vl[3].last()).addFace(vl[7].last(), vl[3].last(), vl[0].last()).addFace(vl[7].last(), vl[0].last(), vl[1].last()).addFace(vl[5].last(), vl[7].last(), vl[1].last()).addFace(vl[4].last(), vl[7].last(), vl[5].last());
 }
