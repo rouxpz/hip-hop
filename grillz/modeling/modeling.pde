@@ -48,6 +48,8 @@ void draw() {
 
 void buildFrame() {
 
+  float diff;
+  
   //build the uniform frame for the grill
   for (int i = 0; i < 4; i++) {
     int curveLength = int(frame[i].getCurveLengths()[0]);
@@ -82,8 +84,24 @@ void buildFrame() {
   vl[3].translate(0, 0, 5);
   vl[4] = vl[2].copy().translate(0, 0, 10);
   vl[5] = vl[1].copy().translate(0, 0, 10);
-  vl[6] = vl[3].copy().translate(0, 0, 30);
   vl[7] = vl[2].copy().translate(0, 0, 5);
+  
+  //shaping the top into a "mouth-friendly" form
+  vl[6] = new UVertexList();
+  
+  for (int i = 0; i < vl[3].size(); i++) {
+      if (i < 45) {
+      diff = vl[3].get(i).z + 0.7*i;
+    } else if (i > 47) {
+      diff = vl[3].get(i).z + 0.7*(92-i);
+    } else {
+      diff = vl[3].get(45).z + 0.7*45;
+    }
+    
+    UVertex nv = new UVertex(vl[3].get(i).x, vl[3].get(i).y, diff);
+    
+    vl[6].add(nv);
+  }
 
   //adding dem faces
   geo = new UGeo().quadstrip(vl[1], vl[0]);
@@ -96,7 +114,6 @@ void addRandomData() {
 
   //add random data to make the front into a landscape
   vl[8] = new UVertexList();
-
 
   for (UVertex v : vl[0]) { 
     
@@ -115,8 +132,9 @@ void addRandomData() {
     vl[8].add(nv);
   }
 
-  vl[8].translate(0, 0, 20);
+  vl[8].translate(0, 0, 15);
   geo.quadstrip(vl[6], vl[8]).quadstrip(vl[8], vl[0]);
+  geo.addFace(vl[0].first(), vl[8].first(), vl[6].first()).addFace(vl[6].last(), vl[8].last(), vl[0].last());
 }
 
 void addRealData() {
