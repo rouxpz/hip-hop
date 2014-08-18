@@ -14,15 +14,39 @@ song = []
 lyrics = songs.searchSong(artist, title, "lyrics")
 
 for lyric in lyrics:
-	lyric = lyric.strip().replace('\n', ' ').replace('(', '').replace(')', '')
-	r = re.search(r'\[(.+?)', lyric)
-	if r == None:
-		words = lyric.split(' ')
-		for word in words:
-			song.append(word)
+	r = re.search(r'\[(.+?)\]', lyric)
+	# if r == None:
+
+	if r != None:
+		# print lyric
+		delete = r.group(0)
+		lyric = lyric.replace(delete, '')
+
+		rnew = re.search(r'\[(.+?)\]', lyric)
+
+		if rnew != None:
+			deletenew = rnew.group(0)
+			lyric = lyric.replace(deletenew, '')
+
+		else:
+			pass
+
+	else:
+		pass
+
+	lyric = lyric.replace('\n', ' ').replace('(', '').replace(')', '').replace(',', '')
+	lyric = lyric.strip()
+	
+	words = lyric.split(' ')
+
+	for word in words:
+		song.append(word)
+	
+# print song
 
 for word in song:
 	file.write(word)
+	file.write(" ")
 
 file.close()
 

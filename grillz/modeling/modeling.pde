@@ -30,7 +30,8 @@ void setup() {
   }
 
   buildFrame();
-  addRandomData();
+  //addRandomData();
+  addRealData();
 }
 
 void draw() {
