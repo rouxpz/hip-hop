@@ -38,8 +38,8 @@ void setup() {
   for (int i = 0; i < handles.length; i++) {
     println(handles[i].x + ", " + handles[i].y);
   }
-  control1 = new PVector(handles[3].x, handles[3].y);
-  control2 = new PVector(handles[3].x, handles[3].y);
+  control1 = new PVector(handles[2].x, handles[2].y);
+  control2 = new PVector(handles[4].x, handles[4].y);
   //println(control1.x + ", " + control1.y);
 
 
@@ -97,7 +97,7 @@ void buildFrame() {
   }
 
   //n3xt l3v3l UVertexLists
-  vl[3].translate(0, 0, 5);
+  vl[3].translate(0, 0, 10);
   vl[4] = vl[2].copy().translate(0, 0, 10);
   vl[5] = vl[1].copy().translate(0, 0, 10);
   vl[7] = vl[2].copy().translate(0, 0, 5);
@@ -151,7 +151,7 @@ void addRandomData() {
     vl[8].add(nv);
   }
 
-  vl[8].translate(0, 0, 15);
+  vl[8].translate(0, 0, 10);
   geo.quadstrip(vl[6], vl[8]).quadstrip(vl[8], vl[0]);
   geo.addFace(vl[0].first(), vl[8].first(), vl[6].first()).addFace(vl[6].last(), vl[8].last(), vl[0].last());
 }
