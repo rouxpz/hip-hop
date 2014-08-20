@@ -12,6 +12,8 @@ UVertexList[] vl = new UVertexList[9];
 UGeo geo;
 UNav3D nav;
 
+PVector control1, control2;
+
 boolean flat = false;
 
 void setup() {
@@ -23,15 +25,27 @@ void setup() {
   smooth();
   RG.init(this);
 
+  //control1, control2 = new PVector();
+
   //load SVGs
   for (int i = 0; i < 4; i++) {
     frame[i] = RG.loadShape("vl" + i + ".svg");
     //println("loaded frame" + i);
   }
 
+  RPoint[] handles = frame[0].getHandles();
+  
+  for (int i = 0; i < handles.length; i++) {
+    println(handles[i].x + ", " + handles[i].y);
+  }
+  control1 = new PVector(handles[3].x, handles[3].y);
+  control2 = new PVector(handles[3].x, handles[3].y);
+  //println(control1.x + ", " + control1.y);
+
+
   buildFrame();
-  //addRandomData();
-  addRealData();
+  addRandomData();
+  //addRealData();
 }
 
 void draw() {
@@ -42,6 +56,7 @@ void draw() {
   stroke(240);
   fill(100);
   geo.draw();
+  
 
   stroke(255, 0, 0);
   geo.drawNormals(10);
@@ -50,7 +65,7 @@ void draw() {
 void buildFrame() {
 
   float diff;
-  
+
   //build the uniform frame for the grill
   for (int i = 0; i < 4; i++) {
     int curveLength = int(frame[i].getCurveLengths()[0]);
@@ -86,18 +101,18 @@ void buildFrame() {
   vl[4] = vl[2].copy().translate(0, 0, 10);
   vl[5] = vl[1].copy().translate(0, 0, 10);
   vl[7] = vl[2].copy().translate(0, 0, 5);
-  
+
   //shaping the top into a "mouth-friendly" form
   vl[6] = new UVertexList();
-  for (int i = 0; i < vl[3].size(); i++) {
-      if (i < 44) {
+  for (int i = 0; i < vl[3].size (); i++) {
+    if (i < 44) {
       diff = vl[3].get(i).z + 0.7*i;
     } else if (i > 48) {
       diff = vl[3].get(i).z + 0.7*(92-i);
     } else {
       diff = vl[3].get(43).z + 31.5;
     }
-    
+
     UVertex nv = new UVertex(vl[3].get(i).x, vl[3].get(i).y, diff);    
     vl[6].add(nv);
   }
@@ -113,21 +128,26 @@ void addRandomData() {
 
   //add random data to make the front into a landscape
   vl[8] = new UVertexList();
+  
+  float beginX = vl[0].first().x;
+  float beginY = vl[0].first().y;
+  float endX = vl[0].last().x;
+  float endY = vl[0].last().y;
+  
+  for (int i = 0; i < vl[0].size(); i++) { 
 
-  for (UVertex v : vl[0]) { 
-    
-    int randomX;
-    int randomY;
-    
-    randomY = round(random(-20, 0));
-    
-    if (v.x <= vl[0].get(46).x) {
-      randomX = round(random(-20, 0));
-    } else {
-      randomX = round(random(0, 20));
-    }
+    UVertex v = vl[0].get(i);
 
-    UVertex nv = new UVertex(v.x + randomX, v.y + randomY, v.z);
+    float randSeed = random(20);
+    float t = i/float(vl[0].size());
+
+    float tx = bezierTangent(beginX, control1.x, control2.x, endX, t);
+    float ty = bezierTangent(beginY, control1.y, control2.y, endY, t);
+    
+    float a = atan2(ty, tx);
+    a -= PI/2.0;
+    
+    UVertex nv = new UVertex(-cos(a)*randSeed + v.x, -sin(a)*randSeed + v.y, 0);
     vl[8].add(nv);
   }
 
@@ -138,7 +158,6 @@ void addRandomData() {
 
 void addRealData() {
   //nothing here yet stay tuned
-  
 }
 
 void keyPressed() {
