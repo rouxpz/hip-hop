@@ -8,13 +8,13 @@ import org.apache.batik.svggen.font.*;
 RShape[] frame = new RShape[4];
 RPolygon[] pframe = new RPolygon[4];
 
+ArrayList<Float> data = new ArrayList<Float>();
+
 UVertexList[] vl = new UVertexList[9];
 UGeo geo;
 UNav3D nav;
 
 PVector control1, control2;
-
-boolean flat = false;
 
 void setup() {
 
@@ -25,29 +25,15 @@ void setup() {
   smooth();
   RG.init(this);
 
-  //control1, control2 = new PVector();
-
   //load SVGs
   for (int i = 0; i < 4; i++) {
     frame[i] = RG.loadShape("vl" + i + ".svg");
     //println("loaded frame" + i);
   }
 
-  RPoint[] handles = frame[0].getHandles();
-  
-  for (int i = 0; i < handles.length; i++) {
-    println(handles[i].x + ", " + handles[i].y);
-  }
-  
-  control1 = new PVector(handles[2].x, handles[2].y);
-  control2 = new PVector(handles[4].x, handles[4].y);
-  //println(control1.x + ", " + control1.y);
-
-  addData();
-
   buildFrame();
+  addData();
   buildFront();
-  
 }
 
 void draw() {
@@ -56,21 +42,25 @@ void draw() {
   nav.doTransforms();
 
   stroke(240);
-  //noStroke();
   fill(125);
-  //geo.scale(.5, .5, .5);
   geo.draw();
-  
 
-  stroke(255, 0, 0);
-  //geo.drawNormals(10);
+  //  stroke(255, 0, 0);
+  //  geo.drawNormals(10);
+}
+
+void addData() {
+  //pulling data in from the lyrics
+  //random for now, will change when python script is done 
+  for (int i = 0; i < vl[0].size (); i++) {
+    float randSeed = random(20);
+    data.add(randSeed);
+  }
 }
 
 void buildFrame() {
-
-  float diff;
-
   //build the uniform frame for the grill
+  //polygonizing the RShapes from SVGs & creating UVertexLists out of them
   for (int i = 0; i < 4; i++) {
     int curveLength = int(frame[i].getCurveLengths()[0]);
     //println(curveLength);
@@ -107,6 +97,8 @@ void buildFrame() {
   vl[7] = vl[2].copy().translate(0, 0, 5);
 
   //shaping the top into a "mouth-friendly" form
+  float diff;
+  
   vl[6] = new UVertexList();
   for (int i = 0; i < vl[3].size (); i++) {
     if (i < 44) {
@@ -129,39 +121,58 @@ void buildFrame() {
 }
 
 void buildFront() {
+  //build the front of the grill into a landscape
+  //get control points from the base SVG
+  RPoint[] handles = frame[0].getHandles();
 
-  //add random data to make the front into a landscape
+  control1 = new PVector(handles[2].x, handles[2].y);
+  control2 = new PVector(handles[4].x, handles[4].y);
+  //println(control1.x + ", " + control1.y);
+
+  //adding dat data
   vl[8] = new UVertexList();
-  
+
   float beginX = vl[0].first().x;
   float beginY = vl[0].first().y;
   float endX = vl[0].last().x;
   float endY = vl[0].last().y;
-  
-  for (int i = 0; i < vl[0].size(); i++) { 
+
+  //create vertices from perpendicular lines to point, length determined by data
+  for (int i = 0; i < vl[0].size (); i++) { 
 
     UVertex v = vl[0].get(i);
 
-    float randSeed = random(20);
+    float l = data.get(i);
     float t = i/float(vl[0].size());
 
     float tx = bezierTangent(beginX, control1.x, control2.x, endX, t);
     float ty = bezierTangent(beginY, control1.y, control2.y, endY, t);
-    
+
     float a = atan2(ty, tx);
     a -= PI/2.0;
-    
-    UVertex nv = new UVertex(-cos(a)*randSeed + v.x, -sin(a)*randSeed + v.y, 0);
+
+    UVertex nv = new UVertex(-cos(a)*l + v.x, -sin(a)*l + v.y, 0);
     vl[8].add(nv);
   }
 
   vl[8].translate(0, 0, 5);
+
+  //create vertical curvature for front
+  float diff;
+  for (int i = 0; i < vl[8].size (); i++) {
+    if (i < 44) {
+      diff = 5 + 0.23*i;
+    } else if (i > 48) {
+      diff = 5 + 0.23*(92-i);
+    } else {
+      diff = 14.89;
+    }
+    vl[8].get(i).z += diff;
+  }
+
+  //mo' faces, mo' problemz
   geo.quadstrip(vl[6], vl[8]).quadstrip(vl[8], vl[0]);
   geo.addFace(vl[0].first(), vl[8].first(), vl[6].first()).addFace(vl[6].last(), vl[8].last(), vl[0].last());
-}
-
-void addData() {
-  //nothing here yet stay tuned
 }
 
 void keyPressed() {
