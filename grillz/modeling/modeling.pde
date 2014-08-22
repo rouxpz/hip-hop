@@ -38,14 +38,16 @@ void setup() {
   for (int i = 0; i < handles.length; i++) {
     println(handles[i].x + ", " + handles[i].y);
   }
+  
   control1 = new PVector(handles[2].x, handles[2].y);
   control2 = new PVector(handles[4].x, handles[4].y);
   //println(control1.x + ", " + control1.y);
 
+  addData();
 
   buildFrame();
-  addRandomData();
-  //addRealData();
+  buildFront();
+  
 }
 
 void draw() {
@@ -54,12 +56,14 @@ void draw() {
   nav.doTransforms();
 
   stroke(240);
-  fill(100);
+  //noStroke();
+  fill(125);
+  //geo.scale(.5, .5, .5);
   geo.draw();
   
 
   stroke(255, 0, 0);
-  geo.drawNormals(10);
+  //geo.drawNormals(10);
 }
 
 void buildFrame() {
@@ -97,7 +101,7 @@ void buildFrame() {
   }
 
   //n3xt l3v3l UVertexLists
-  vl[3].translate(0, 0, 10);
+  vl[3].translate(0, 0, 5);
   vl[4] = vl[2].copy().translate(0, 0, 10);
   vl[5] = vl[1].copy().translate(0, 0, 10);
   vl[7] = vl[2].copy().translate(0, 0, 5);
@@ -124,7 +128,7 @@ void buildFrame() {
   geo.addFace(vl[6].last(), vl[0].last(), vl[3].last()).addFace(vl[7].last(), vl[3].last(), vl[0].last()).addFace(vl[7].last(), vl[0].last(), vl[1].last()).addFace(vl[5].last(), vl[7].last(), vl[1].last()).addFace(vl[4].last(), vl[7].last(), vl[5].last());
 }
 
-void addRandomData() {
+void buildFront() {
 
   //add random data to make the front into a landscape
   vl[8] = new UVertexList();
@@ -151,12 +155,12 @@ void addRandomData() {
     vl[8].add(nv);
   }
 
-  vl[8].translate(0, 0, 10);
+  vl[8].translate(0, 0, 5);
   geo.quadstrip(vl[6], vl[8]).quadstrip(vl[8], vl[0]);
   geo.addFace(vl[0].first(), vl[8].first(), vl[6].first()).addFace(vl[6].last(), vl[8].last(), vl[0].last());
 }
 
-void addRealData() {
+void addData() {
   //nothing here yet stay tuned
 }
 
