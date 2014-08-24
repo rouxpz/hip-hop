@@ -34,7 +34,7 @@ for lyric in lyrics:
 	else:
 		pass
 
-	lyric = lyric.replace('\n', ' ').replace('(', '').replace(')', '').replace(',', '')
+	lyric = lyric.replace('\n', ' ').replace('(', '').replace(')', '').replace(',', '').replace('-', ' ')
 	lyric = lyric.strip()
 	
 	words = lyric.split(' ')
