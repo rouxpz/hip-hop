@@ -7,6 +7,7 @@ title = raw_input("Please enter song title: ")
 
 song = []
 keys = []
+scores = []
 
 def keyPhrases(category):
 
@@ -56,55 +57,91 @@ def getLyrics():
 
 def analyzeSong():
 
-	#open file to store score data
+	# open file to store score data
 	filename = "LYRIC-FILES/" + artist + "-" + title + ".txt"
 	file = open(filename, "w")
 
+	# scoring poverty words
 	for i in range(0, len(song)-1):
-		word = song[i]
-		nextWord = song[i+1]
-		score = 0
+		word = song[i].lower()
+		nextWord = song[i+1].lower()
+		score = 0.0
 		for p in poverty:
 			r = re.search(p, word)
 			if r != None:
-				print word + ": Poverty, close to"
 				if i >= 10 or i <= len(song)-10:
 					for j in range(i-10, i+10):
 						if j != i:
-							comparison = song[j]
+							comparison = song[j].lower()
 							for w in wealth:
 								r1 = re.search(w, comparison)
 								if r1 != None:
-									print comparison
+									# print comparison
+									score += abs(j-i)
+									score = 1/score
+									scores.append(score)
+				#print word and score
+				# print word + ": Poverty, " + str(score)
+				continue
 
 			elif r == None:
 				compound = [word, nextWord]
 				compound = ' '.join(compound)
 				e = re.match(p, compound)
 				if e != None:
-					print compound + ": Poverty"
+					if i >= 10 or i <= len(song)-10:
+						for j in range(i-10, i+11):
+							if j != i and j != i+1:
+								comparison = song[j].lower()
+								for w in wealth:
+									r1 = re.search(w, comparison)
+									if r1 != None:
+										# print comparison
+										score += abs(j-i)
+										score = 1/score
+										scores.append(score)
+					# print compound + ": Poverty, " + str(score)
+					continue
 
 		for w2 in wealth:
 			r = re.search(w2, word)
 			if r != None:
-				print word + ": Wealth"
 				if i >= 10 or i <= len(song)-10:
 					for j in range(i-10, i+10):
 						if j != i:
-							comparison = song[j]
+							comparison = song[j].lower()
 							for p in poverty:
 								r1 = re.search(p, comparison)
 								if r1 != None:
-									print comparison
+									score += abs(j-i)
+									score = 1/score
+									scores.append(score)
+				# print word + ": Wealth, " + str(score)
+				continue
+
 			elif r == None:
 				compound = [word, nextWord]
 				compound = ' '.join(compound)
 				e = re.match(w2, compound)
 				if e != None:
-					print compound + ": Wealth"
+					if i >= 10 or i <= len(song)-10:
+						for j in range(i-10, i+11):
+							if j != i and j != i+1:
+								comparison = song[j].lower()
+								for p in poverty:
+									r1 = re.search(w, comparison)
+									if r1 != None:
+										# print comparison
+										score += abs(j-i)
+										score = 1/score
+										scores.append(score)
+					# print compound + ": Wealth, " + str(score)
+					continue
 
-		file.write(word)
-		file.write(" ")
+		# scores.append(score)
+		scored = word + "," + str(score)
+		file.write(scored)
+		file.write("\n")
 
 	file.close()
 
@@ -118,8 +155,10 @@ keyPhrases("wealth")
 poverty = keys[0]
 wealth = keys[1]
 
-print poverty
+# print poverty
 
 getLyrics()
 analyzeSong()
+
+print len(scores)
 
