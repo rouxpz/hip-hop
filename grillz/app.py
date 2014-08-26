@@ -52,12 +52,57 @@ def getLyrics():
 		for word in words:
 			song.append(word)
 
-def analyzeSong():
-	filename = "LYRIC-FILES/" + artist + "-" + title + ".txt"
+	print "Song collected!"
 
+def analyzeSong():
+
+	#open file to store score data
+	filename = "LYRIC-FILES/" + artist + "-" + title + ".txt"
 	file = open(filename, "w")
 
-	for word in song:
+	for i in range(0, len(song)-1):
+		word = song[i]
+		nextWord = song[i+1]
+		score = 0
+		for p in poverty:
+			r = re.search(p, word)
+			if r != None:
+				print word + ": Poverty, close to"
+				if i >= 10 or i <= len(song)-10:
+					for j in range(i-10, i+10):
+						if j != i:
+							comparison = song[j]
+							for w in wealth:
+								r1 = re.search(w, comparison)
+								if r1 != None:
+									print comparison
+
+			elif r == None:
+				compound = [word, nextWord]
+				compound = ' '.join(compound)
+				e = re.match(p, compound)
+				if e != None:
+					print compound + ": Poverty"
+
+		for w2 in wealth:
+			r = re.search(w2, word)
+			if r != None:
+				print word + ": Wealth"
+				if i >= 10 or i <= len(song)-10:
+					for j in range(i-10, i+10):
+						if j != i:
+							comparison = song[j]
+							for p in poverty:
+								r1 = re.search(p, comparison)
+								if r1 != None:
+									print comparison
+			elif r == None:
+				compound = [word, nextWord]
+				compound = ' '.join(compound)
+				e = re.match(w2, compound)
+				if e != None:
+					print compound + ": Wealth"
+
 		file.write(word)
 		file.write(" ")
 
@@ -73,11 +118,8 @@ keyPhrases("wealth")
 poverty = keys[0]
 wealth = keys[1]
 
-# print poverty
-# print wealth
+print poverty
 
 getLyrics()
 analyzeSong()
-
-# print song
 
