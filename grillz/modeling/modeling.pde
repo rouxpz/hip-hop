@@ -4,10 +4,15 @@ import ec.util.*;
 import geomerative.*;
 import org.apache.batik.svggen.font.table.*;
 import org.apache.batik.svggen.font.*;
+import java.util.Collections;
 
 RShape[] frame = new RShape[4];
 RPolygon[] pframe = new RPolygon[4];
 
+String title = "juicy";
+String artist = "the notorious big";
+
+float half;
 ArrayList<Float> data = new ArrayList<Float>();
 
 UVertexList[] vl = new UVertexList[9];
@@ -51,10 +56,34 @@ void draw() {
 
 void addData() {
   //pulling data in from the lyrics
-  //random for now, will change when python script is done 
-  for (int i = 0; i < vl[0].size (); i++) {
-    float randSeed = random(20);
-    data.add(randSeed);
+
+  String[] lyrics = loadStrings(artist + "-" + title + ".txt");
+
+  for (int i = 0; i < lyrics.length; i++) {
+    String[] splitLyrics = lyrics[i].split(",");
+    float score = float(splitLyrics[1]);
+    data.add(score);
+    //println(score);
+  }
+
+
+  if (lyrics.length < 91) {
+    float remainder = 91 - lyrics.length;
+    //println(remainder);
+
+    if (remainder % 2 != 0) {
+      half = remainder/2;
+      int frontHalf = int(half + 0.5);
+      int backHalf = int(half - 0.5);
+      for (int i = 0; i < frontHalf; i++) {
+        data.add(0, 0.0);
+      }
+      for (int i = 0; i < backHalf; i++) {
+        data.add(0.0);
+      }
+    }
+
+    println(data.size());
   }
 }
 
@@ -98,7 +127,7 @@ void buildFrame() {
 
   //shaping the top into a "mouth-friendly" form
   float diff;
-  
+
   vl[6] = new UVertexList();
   for (int i = 0; i < vl[3].size (); i++) {
     if (i < 44) {
@@ -128,7 +157,10 @@ void buildFront() {
   control1 = new PVector(handles[2].x, handles[2].y);
   control2 = new PVector(handles[4].x, handles[4].y);
   //println(control1.x + ", " + control1.y);
-
+  
+  float highest = Collections.max(data);
+  //println(highest);
+  
   //adding dat data
   vl[8] = new UVertexList();
 
@@ -142,7 +174,8 @@ void buildFront() {
 
     UVertex v = vl[0].get(i);
 
-    float l = data.get(i);
+    float d = data.get(i);
+    float l = map(d, 0, highest, 1, 20);
     float t = i/float(vl[0].size());
 
     float tx = bezierTangent(beginX, control1.x, control2.x, endX, t);
