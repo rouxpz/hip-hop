@@ -77,12 +77,14 @@ def analyzeSong():
 								r1 = re.search(w, comparison)
 								if r1 != None:
 									# print comparison
-									score += abs(j-i)
-									score = 1/score
-									scores.append(score)
+									toAdd = float(abs(j-i))
+									# print toAdd
+									toAdd = 1/toAdd
+									score += toAdd
+									# scores.append(score)
 				#print word and score
 				# print word + ": Poverty, " + str(score)
-				continue
+				# continue
 
 			elif r == None:
 				compound = [word, nextWord]
@@ -97,11 +99,13 @@ def analyzeSong():
 									r1 = re.search(w, comparison)
 									if r1 != None:
 										# print comparison
-										score += abs(j-i)
-										score = 1/score
-										scores.append(score)
+										toAdd = float(abs(j-i))
+										# print toAdd
+										toAdd = 1/toAdd
+										score += toAdd
+										# scores.append(score)
 					# print compound + ": Poverty, " + str(score)
-					continue
+					# continue
 
 		for w2 in wealth:
 			r = re.search(w2, word)
@@ -113,11 +117,13 @@ def analyzeSong():
 							for p in poverty:
 								r1 = re.search(p, comparison)
 								if r1 != None:
-									score += abs(j-i)
-									score = 1/score
-									scores.append(score)
+									toAdd = float(abs(j-i))
+									toAdd = 1/toAdd
+									# print toAdd
+									score += toAdd
+									# scores.append(score)
 				# print word + ": Wealth, " + str(score)
-				continue
+				# continue
 
 			elif r == None:
 				compound = [word, nextWord]
@@ -132,11 +138,13 @@ def analyzeSong():
 									r1 = re.search(w, comparison)
 									if r1 != None:
 										# print comparison
-										score += abs(j-i)
-										score = 1/score
-										scores.append(score)
+										toAdd = float(abs(j-i))
+										# print toAdd
+										toAdd = 1/toAdd
+										score += toAdd
+										# scores.append(score)
 					# print compound + ": Wealth, " + str(score)
-					continue
+					# continue
 
 		# scores.append(score)
 		scored = word + "," + str(score)
