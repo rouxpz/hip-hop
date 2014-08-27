@@ -45,13 +45,14 @@ def getLyrics():
 		else:
 			pass
 
-		lyric = lyric.replace('\n', ' ').replace('(', '').replace(')', '').replace(',', '').replace('-', ' ')
+		lyric = lyric.replace('\n', ' ').replace('(', '').replace(')', '').replace(',', '').replace('-', ' ').replace('...', '')
 		lyric = lyric.strip()
 		
 		words = lyric.split(' ')
 
 		for word in words:
-			song.append(word)
+			if word != '':
+				song.append(word)
 
 	print "Song collected!"
 
@@ -66,9 +67,11 @@ def analyzeSong():
 		word = song[i].lower()
 		nextWord = song[i+1].lower()
 		score = 0.0
+		collect = False
 		for p in poverty:
 			r = re.search(p, word)
 			if r != None:
+				collect = True
 				if i >= 10 or i <= len(song)-10:
 					for j in range(i-10, i+10):
 						if j != i:
@@ -81,16 +84,13 @@ def analyzeSong():
 									# print toAdd
 									toAdd = 1/toAdd
 									score += toAdd
-									# scores.append(score)
-				#print word and score
-				# print word + ": Poverty, " + str(score)
-				# continue
 
 			elif r == None:
 				compound = [word, nextWord]
 				compound = ' '.join(compound)
 				e = re.match(p, compound)
 				if e != None:
+					collect = True
 					if i >= 10 or i <= len(song)-10:
 						for j in range(i-10, i+11):
 							if j != i and j != i+1:
@@ -103,13 +103,11 @@ def analyzeSong():
 										# print toAdd
 										toAdd = 1/toAdd
 										score += toAdd
-										# scores.append(score)
-					# print compound + ": Poverty, " + str(score)
-					# continue
 
 		for w2 in wealth:
 			r = re.search(w2, word)
 			if r != None:
+				collect = True
 				if i >= 10 or i <= len(song)-10:
 					for j in range(i-10, i+10):
 						if j != i:
@@ -121,15 +119,13 @@ def analyzeSong():
 									toAdd = 1/toAdd
 									# print toAdd
 									score += toAdd
-									# scores.append(score)
-				# print word + ": Wealth, " + str(score)
-				# continue
 
 			elif r == None:
 				compound = [word, nextWord]
 				compound = ' '.join(compound)
 				e = re.match(w2, compound)
 				if e != None:
+					collect = True
 					if i >= 10 or i <= len(song)-10:
 						for j in range(i-10, i+11):
 							if j != i and j != i+1:
@@ -142,12 +138,12 @@ def analyzeSong():
 										# print toAdd
 										toAdd = 1/toAdd
 										score += toAdd
-										# scores.append(score)
-					# print compound + ": Wealth, " + str(score)
-					# continue
+		if collect == True:
+			scores.append([word, score])
 
-		# scores.append(score)
-		scored = word + "," + str(score)
+	# scores.append(score)
+	for k in range(0, len(scores)):
+		scored = scores[k][0] + ", " + str(scores[k][1])
 		file.write(scored)
 		file.write("\n")
 
