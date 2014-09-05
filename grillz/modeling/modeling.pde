@@ -6,8 +6,8 @@ import org.apache.batik.svggen.font.table.*;
 import org.apache.batik.svggen.font.*;
 import java.util.Collections;
 
-RShape[] frame = new RShape[4];
-RPolygon[] pframe = new RPolygon[4];
+RShape[] frame = new RShape[5];
+RPolygon[] pframe = new RPolygon[5];
 
 String title = "juicy";
 String artist = "the notorious big";
@@ -15,7 +15,7 @@ String artist = "the notorious big";
 float half;
 ArrayList<Float> data = new ArrayList<Float>();
 
-UVertexList[] vl = new UVertexList[9];
+UVertexList[] vl = new UVertexList[11];
 UGeo geo;
 UNav3D nav;
 
@@ -31,7 +31,7 @@ void setup() {
   RG.init(this);
 
   //load SVGs
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 5; i++) {
     frame[i] = RG.loadShape("vl" + i + ".svg");
     //println("loaded frame" + i);
   }
@@ -47,6 +47,7 @@ void draw() {
   nav.doTransforms();
 
   stroke(240);
+  //noStroke();
   fill(125);
   geo.draw();
 
@@ -90,8 +91,8 @@ void addData() {
 void buildFrame() {
   //build the uniform frame for the grill
   //polygonizing the RShapes from SVGs & creating UVertexLists out of them
-  for (int i = 0; i < 4; i++) {
-    int curveLength = int(frame[i].getCurveLengths()[0]);
+  for (int i = 0; i < 5; i++) {
+    //int curveLength = int(frame[i].getCurveLengths()[0]);
     //println(curveLength);
     RCommand.setSegmentator(RG.UNIFORMSTEP);
     if (i < 1 || i > 2) {
@@ -121,32 +122,20 @@ void buildFrame() {
 
   //n3xt l3v3l UVertexLists
   vl[3].translate(0, 0, 5);
-  vl[4] = vl[2].copy().translate(0, 0, 10);
-  vl[5] = vl[1].copy().translate(0, 0, 10);
-  vl[7] = vl[2].copy().translate(0, 0, 5);
+  vl[4].translate(0, 0, 5);
+  vl[5] = vl[2].copy().translate(0, 0, 10);
+  vl[7] = vl[1].copy().translate(0, 0, 10);
+  vl[8] = vl[2].copy().translate(0, 0, 5);
 
   //shaping the top into a "mouth-friendly" form
-  float diff;
-
-  vl[6] = new UVertexList();
-  for (int i = 0; i < vl[3].size (); i++) {
-    if (i < 44) {
-      diff = vl[3].get(i).z + 0.7*i;
-    } else if (i > 48) {
-      diff = vl[3].get(i).z + 0.7*(92-i);
-    } else {
-      diff = vl[3].get(43).z + 31.5;
-    }
-
-    UVertex nv = new UVertex(vl[3].get(i).x, vl[3].get(i).y, diff);    
-    vl[6].add(nv);
-  }
+  shapeTop(6, 3);
+  shapeTop(10, 4);
 
   //adding dem faces
   geo = new UGeo().quadstrip(vl[1], vl[0]);
-  geo.quadstrip(vl[7], vl[4]).quadstrip(vl[4], vl[5]).quadstrip(vl[5], vl[1]).quadstrip(vl[3], vl[7]).quadstrip(vl[3], vl[6]);
-  geo.addFace(vl[3].first(), vl[0].first(), vl[6].first()).addFace(vl[0].first(), vl[3].first(), vl[7].first()).addFace(vl[1].first(), vl[0].first(), vl[7].first()).addFace(vl[1].first(), vl[7].first(), vl[5].first()).addFace(vl[5].first(), vl[7].first(), vl[4].first());
-  geo.addFace(vl[6].last(), vl[0].last(), vl[3].last()).addFace(vl[7].last(), vl[3].last(), vl[0].last()).addFace(vl[7].last(), vl[0].last(), vl[1].last()).addFace(vl[5].last(), vl[7].last(), vl[1].last()).addFace(vl[4].last(), vl[7].last(), vl[5].last());
+  geo.quadstrip(vl[8], vl[5]).quadstrip(vl[5], vl[7]).quadstrip(vl[7], vl[1]).quadstrip(vl[4], vl[8]).quadstrip(vl[4], vl[10]).quadstrip(vl[6], vl[10]);
+  geo.addFace(vl[4].first(), vl[0].first(), vl[10].first()).addFace(vl[0].first(), vl[4].first(), vl[8].first()).addFace(vl[1].first(), vl[0].first(), vl[8].first()).addFace(vl[1].first(), vl[8].first(), vl[7].first()).addFace(vl[7].first(), vl[8].first(), vl[5].first()).addFace(vl[0].first(), vl[6].first(), vl[10].first());
+  geo.addFace(vl[10].last(), vl[0].last(), vl[4].last()).addFace(vl[8].last(), vl[4].last(), vl[0].last()).addFace(vl[8].last(), vl[0].last(), vl[1].last()).addFace(vl[7].last(), vl[8].last(), vl[1].last()).addFace(vl[5].last(), vl[8].last(), vl[7].last()).addFace(vl[0].last(), vl[6].last(), vl[10].last());
 }
 
 void buildFront() {
@@ -157,10 +146,10 @@ void buildFront() {
   control1 = new PVector(handles[2].x, handles[2].y);
   control2 = new PVector(handles[4].x, handles[4].y);
   //println(control1.x + ", " + control1.y);
-  
+
   float highest = Collections.max(data);
   //println(highest);
-  
+
   //adding dat data
   vl[8] = new UVertexList();
 
@@ -208,6 +197,24 @@ void buildFront() {
   geo.addFace(vl[0].first(), vl[8].first(), vl[6].first()).addFace(vl[6].last(), vl[8].last(), vl[0].last());
 }
 
+void shapeTop(int index, int baseIndex) {
+  float diff;
+
+  vl[index] = new UVertexList();
+  for (int i = 0; i < vl[baseIndex].size(); i++) {
+    if (i < 44) {
+      diff = vl[baseIndex].get(i).z + 0.7*i;
+    } else if (i > 48) {
+      diff = vl[baseIndex].get(i).z + 0.7*(92-i);
+    } else {
+      diff = vl[baseIndex].get(43).z + 31.5;
+    }
+
+    UVertex nv = new UVertex(vl[baseIndex].get(i).x, vl[baseIndex].get(i).y, diff);    
+    vl[index].add(nv);
+  }
+}
+
 void keyPressed() {
 
   //write to STL file 
@@ -215,4 +222,3 @@ void keyPressed() {
     geo.writeSTL("testv2.stl");
   }
 }
-
