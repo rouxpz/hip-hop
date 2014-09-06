@@ -182,12 +182,12 @@ void buildFront() {
   //create vertical curvature for front
   float diff;
   for (int i = 0; i < vl[8].size (); i++) {
-    if (i < 44) {
-      diff = 5 + 0.23*i;
-    } else if (i > 48) {
-      diff = 5 + 0.23*(92-i);
+    if (i < 25) {
+      diff = 5 + 0.6*i;
+    } else if (i > 67) {
+      diff = 5 + 0.6*(92-i);
     } else {
-      diff = 14.89;
+      diff = 15;
     }
     vl[8].get(i).z += diff;
   }
@@ -202,10 +202,10 @@ void shapeTop(int index, int baseIndex) {
 
   vl[index] = new UVertexList();
   for (int i = 0; i < vl[baseIndex].size(); i++) {
-    if (i < 30) {
-      diff = vl[baseIndex].get(i).z + 1.08*i;
-    } else if (i > 62) {
-      diff = vl[baseIndex].get(i).z + 1.08*(92-i);
+    if (i < 25) {
+      diff = vl[baseIndex].get(i).z + 1.28*i;
+    } else if (i > 67) {
+      diff = vl[baseIndex].get(i).z + 1.28*(92-i);
     } else {
       diff = vl[baseIndex].get(43).z + 32;
     }
