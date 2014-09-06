@@ -202,12 +202,12 @@ void shapeTop(int index, int baseIndex) {
 
   vl[index] = new UVertexList();
   for (int i = 0; i < vl[baseIndex].size(); i++) {
-    if (i < 44) {
-      diff = vl[baseIndex].get(i).z + 0.7*i;
-    } else if (i > 48) {
-      diff = vl[baseIndex].get(i).z + 0.7*(92-i);
+    if (i < 30) {
+      diff = vl[baseIndex].get(i).z + 1.08*i;
+    } else if (i > 62) {
+      diff = vl[baseIndex].get(i).z + 1.08*(92-i);
     } else {
-      diff = vl[baseIndex].get(43).z + 31.5;
+      diff = vl[baseIndex].get(43).z + 32;
     }
 
     UVertex nv = new UVertex(vl[baseIndex].get(i).x, vl[baseIndex].get(i).y, diff);    
