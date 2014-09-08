@@ -9,8 +9,8 @@ import java.util.Collections;
 RShape[] frame = new RShape[5];
 RPolygon[] pframe = new RPolygon[5];
 
-String title = "hustlin";
-String artist = "rick ross";
+String title = "juicy";
+String artist = "the notorious big";
 
 float half;
 ArrayList<Float> data = new ArrayList<Float>();
@@ -58,7 +58,7 @@ void draw() {
 void addData() {
   //pulling data in from the lyrics
 
-  String[] lyrics = loadStrings("data/lyrics" + artist + "-" + title + ".txt");
+  String[] lyrics = loadStrings("data/lyrics/" + artist + "-" + title + ".txt");
 
   for (int i = 0; i < lyrics.length; i++) {
     String[] splitLyrics = lyrics[i].split(",");

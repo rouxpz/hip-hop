@@ -62,7 +62,7 @@ def getLyrics():
 def analyzeSong():
 
 	# open file to store score data
-	filename = "LYRIC-FILES/" + artist + "-" + title + ".txt"
+	filename = "modeling/data/lyrics/" + artist + "-" + title + ".txt"
 	file = open(filename, "w")
 
 	# scoring poverty words
