@@ -5,7 +5,7 @@ import os
 artist = raw_input("Please enter artist: ")
 title = raw_input("Please enter song title: ")
 
-song = []
+song = ['', '', '', '', '', '', '', '', '', ''] #seeding song with 10 blanks up front
 keys = []
 scores = []
 
@@ -54,6 +54,9 @@ def getLyrics():
 			if word != '':
 				song.append(word)
 
+	for i in range(10):
+		song.append(" ")
+
 	print "Song collected!"
 
 def analyzeSong():
@@ -76,6 +79,7 @@ def analyzeSong():
 					for j in range(i-10, i+10):
 						if j != i:
 							comparison = song[j].lower()
+							nextComp = song[j+1].lower()
 							for w in wealth:
 								r1 = re.search(w, comparison)
 								if r1 != None:
@@ -84,6 +88,17 @@ def analyzeSong():
 									# print toAdd
 									toAdd = 1/toAdd
 									score += toAdd
+								elif r1 == None:
+									compound = [comparison, nextComp]
+									compound = ' '.join(compound)
+									e = re.match(w, compound)
+									if e != None:
+										
+										toAdd = float(abs((j+1)-i))
+										if toAdd > 0:
+											toAdd = 1/toAdd
+										score += toAdd
+										print "Added a compound"
 
 			elif r == None:
 				compound = [word, nextWord]
@@ -95,6 +110,7 @@ def analyzeSong():
 						for j in range(i-10, i+11):
 							if j != i and j != i+1:
 								comparison = song[j].lower()
+								nextComp = song[j+1].lower()
 								for w in wealth:
 									r1 = re.search(w, comparison)
 									if r1 != None:
@@ -103,6 +119,17 @@ def analyzeSong():
 										# print toAdd
 										toAdd = 1/toAdd
 										score += toAdd
+									elif r1 == None:
+										compound = [comparison, nextComp]
+										compound = ' '.join(compound)
+										e = re.match(w, compound)
+										if e != None:
+											
+											toAdd = float(abs((j+1)-i))
+											if toAdd > 0:
+												toAdd = 1/toAdd
+											score += toAdd
+											print "Added a compound"
 
 		for w2 in wealth:
 			r = re.search(w2, word)
@@ -112,6 +139,7 @@ def analyzeSong():
 					for j in range(i-10, i+10):
 						if j != i:
 							comparison = song[j].lower()
+							nextComp = song[j+1].lower()
 							for p in poverty:
 								r1 = re.search(p, comparison)
 								if r1 != None:
@@ -119,6 +147,17 @@ def analyzeSong():
 									toAdd = 1/toAdd
 									# print toAdd
 									score += toAdd
+								elif r1 == None:
+									compound = [comparison, nextComp]
+									compound = ' '.join(compound)
+									e = re.match(p, compound)
+									if e != None:
+										
+										toAdd = float(abs((j+1)-i))
+										if toAdd > 0:
+											toAdd = 1/toAdd
+										score += toAdd
+										print "Added a compound"
 
 			elif r == None:
 				compound = [word, nextWord]
@@ -130,14 +169,26 @@ def analyzeSong():
 						for j in range(i-10, i+11):
 							if j != i and j != i+1:
 								comparison = song[j].lower()
+								nextComp = song[j+1].lower()
 								for p in poverty:
-									r1 = re.search(w, comparison)
+									r1 = re.search(p, comparison)
 									if r1 != None:
 										# print comparison
 										toAdd = float(abs(j-i))
 										# print toAdd
 										toAdd = 1/toAdd
 										score += toAdd
+									elif r1 == None:
+										compound = [comparison, nextComp]
+										compound = ' '.join(compound)
+										e = re.match(p, compound)
+										if e != None:
+											
+											toAdd = float(abs((j+1)-i))
+											if toAdd > 0:
+												toAdd = 1/toAdd
+											score += toAdd
+											print "Added a compound"
 		if collect == True:
 			scores.append([word, score])
 
